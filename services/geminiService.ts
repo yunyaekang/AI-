@@ -2,12 +2,6 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import type { FormData, VideoScript } from '../types';
 
-if (!process.env.API_KEY) {
-  throw new Error("API_KEY environment variable is not set");
-}
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const schema = {
   type: Type.OBJECT,
   properties: {
@@ -50,6 +44,9 @@ const schema = {
 };
 
 export const generatePrompt = async (formData: FormData): Promise<VideoScript> => {
+  // Initialize the client inside the function to prevent top-level crashes
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
   const { productName, keyFeatures, targetAudience, vibe, length } = formData;
 
   const prompt = `
